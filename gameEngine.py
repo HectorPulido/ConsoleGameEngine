@@ -1,5 +1,6 @@
 import math
 
+
 class gameEngine:
     def __init__(self, room, screenSize, pov, minStep, minStepAngle, maxDistance, wallHeight):
         self.roomMatrix = room.split("\n")
@@ -54,7 +55,10 @@ class gameEngine:
                 if math.fabs(self.screenSize[1]/2 - j) <= (self.wallHeight - i):
                     s = " "
                     if i == -1:
-                        s = " "
+                        if (self.screenSize[1]/2 - j) < 0:
+                            output += "."
+                        else:
+                            output += " "
                     elif i >= 0 and i < 4:
                         s = u"\u2588"
                     elif i >= 4 and i < 8:
@@ -64,10 +68,17 @@ class gameEngine:
                     elif i >= 10 and i < 15:
                         s = u"\u2591"
                     else:
-                        s = " "
+                        if (self.screenSize[1]/2 - j) < 0:
+                            output += "."
+                        else:
+                            output += " "
+
                     output += s
                 else:
-                    output += " "
+                    if (self.screenSize[1]/2 - j) < 0:
+                        output += "."
+                    else:
+                        output += " "
             output += "\n"
 
         return output

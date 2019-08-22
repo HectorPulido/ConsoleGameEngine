@@ -12,12 +12,6 @@ class gameEngine:
         self.wallHeight = wallHeight
         self.roomSize = (len(self.roomMatrix), len(self.roomMatrix[0]))
 
-    def drange(self, start, stop, step):
-        r = start
-        while r < stop:
-            yield r
-            r += step
-
     def calcDistance(self, position, angle):
         distance = self.minStep
         while distance <= self.maxDistance:
@@ -46,6 +40,28 @@ class gameEngine:
 
         return distances
 
+    def getBlock(self, distance):
+        if distance >= 0 and distance < 4:
+            return u"\u2588"
+        elif distance >= 4 and distance < 8:
+            return u"\u2593"
+        elif distance >= 8 and distance < 12:
+            return u"\u2592"
+        elif distance >= 10 and distance < 15:
+            return u"\u2591"
+        return -1
+
+    def getEmpty(self, screenPoint):
+        screenPoint *= -1
+
+        if screenPoint < 5:
+            return "."
+        elif screenPoint < 10 and screenPoint >= 5:
+            return "-"
+        elif screenPoint < 15 and screenPoint >= 10:
+            return "X"
+        return "#"
+
     def getScreen(self, position, angle):
         view = self.calcPov(position, angle)
 
@@ -53,30 +69,17 @@ class gameEngine:
         for j in range(self.screenSize[1]):
             for i in view:
                 if math.fabs(self.screenSize[1]/2 - j) <= (self.wallHeight - i):
-                    s = " "
-                    if i == -1:
+                    s = self.getBlock(i)
+                    if s == -1:
                         if (self.screenSize[1]/2 - j) < 0:
-                            output += "."
+                            s = self.getEmpty(self.screenSize[1]/2 - j)
                         else:
-                            output += " "
-                    elif i >= 0 and i < 4:
-                        s = u"\u2588"
-                    elif i >= 4 and i < 8:
-                        s = u"\u2593"
-                    elif i >= 8 and i < 12:
-                        s = u"\u2592"
-                    elif i >= 10 and i < 15:
-                        s = u"\u2591"
-                    else:
-                        if (self.screenSize[1]/2 - j) < 0:
-                            output += "."
-                        else:
-                            output += " "
+                            s = " "
 
                     output += s
                 else:
                     if (self.screenSize[1]/2 - j) < 0:
-                        output += "."
+                        output += self.getEmpty(self.screenSize[1]/2 - j)
                     else:
                         output += " "
             output += "\n"
